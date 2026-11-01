@@ -7,7 +7,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-24.04, windows-latest, macos-latest]
         python: ['3.11', '3.12']
     runs-on: ${{ matrix.os }}
     env:
@@ -15,15 +15,18 @@ jobs:
       MPLBACKEND: Agg
       OMP_NUM_THREADS: '1'
       OPENBLAS_NUM_THREADS: '1'
+      PYTHONUTF8: '1'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python }}
       - name: Install Linux Qt runtime
         if: runner.os == 'Linux'
         run: sudo apt-get update && sudo apt-get install -y libegl1 libopengl0
       - run: python -m pip install -e ".[gui,dev]"
+      - name: Check native solver imports
+        run: python -c "import cvxpy, osqp; print('CVXPY', cvxpy.__version__, 'OSQP', osqp.__version__)"
       - run: python -m ruff check src tests tools
       - run: python -m pytest -q
       - run: python tools/check_release.py
