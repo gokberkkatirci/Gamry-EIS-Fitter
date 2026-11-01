@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=77", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "eis-fitter"
+version = "0.1.0"
+description = "GUI and interactive terminal fitting for Gamry EIS files"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+license = "GPL-3.0-only"
+license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]
+dependencies = [
+    "numpy>=1.24,<3",
+    "scipy>=1.10,<2",
+    "matplotlib>=3.7,<4",
+    "cvxpy>=1.4,<2",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+]
+
+[project.optional-dependencies]
+gui = ["PyQt5>=5.15,<6"]
+dev = ["pytest>=8,<10", "build>=1,<2", "wheel", "ruff>=0.11,<1"]
+
+[project.scripts]
+eis-fit = "eis_fitter.cli:main"
+eis-fit-gui = "eis_fitter.cli:gui_main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["eis_fitter*"]
+
+[tool.setuptools]
+include-package-data = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff.lint]
+select = ["F821", "F822", "F823", "E9"]

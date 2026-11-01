@@ -1,0 +1,31 @@
+# Local environments and generated artifacts
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.log
+.DS_Store
+.idea/
+.vscode/
+
+# User measurements and results (case variants included)
+*.[dD][tT][aA]
+*.[gG][dD][aA][tT][aA]
+*.csv
+*.tsv
+*.xlsx
+*.zip
+*.ipynb
+data/
+results/
+EIS_Fit_Results/
+
+# The documentation image is a reviewed source asset.
+!docs/images/gui-empty.png

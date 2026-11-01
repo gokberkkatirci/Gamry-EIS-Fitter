@@ -1,0 +1,11 @@
+include LICENSE README.md THIRD_PARTY_NOTICES.md CONTRIBUTING.md CHANGELOG.md
+include pyproject.toml .gitignore
+recursive-include src *.py
+recursive-include tests *.py
+recursive-include tools *.py
+recursive-include docs *.md
+include docs/images/gui-empty.png
+include .github/workflows/ci.yml
+global-exclude *.py[cod] .DS_Store
+prune build
+prune dist
