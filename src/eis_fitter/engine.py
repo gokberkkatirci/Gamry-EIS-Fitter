@@ -17,7 +17,7 @@ import sys
 import csv
 from datetime import datetime
 
-# ---- Global font: Arial for all plots ----
+# ---- Portable default font for all plots ----
 plt.rcParams["font.family"] = "DejaVu Sans"
 
 # ============================================================
@@ -121,12 +121,21 @@ def find_all_dta_files(root_dir="."):
     return dta_files
 
 
+def display_path(filepath, start="."):
+    """Use a relative path when possible, or an absolute path across drives."""
+    try:
+        return os.path.relpath(filepath, start)
+    except ValueError:
+        # Windows cannot express a relative path between different drives.
+        return os.path.abspath(filepath)
+
+
 def display_file_list(dta_files):
     """Display a numbered list of DTA files."""
     banner("AVAILABLE .DTA FILES", C.BLUE)
     for i, fpath in enumerate(dta_files, start=1):
         num_color = C.GREEN if i % 2 == 0 else C.CYAN
-        print(f"  {num_color}[{i:3d}]{C.RESET}  {os.path.relpath(fpath, '.')}")
+        print(f"  {num_color}[{i:3d}]{C.RESET}  {display_path(fpath, '.')}")
     print(f"{C.BLUE}{C.BOLD}{'=' * 70}{C.RESET}")
 
 
@@ -1460,7 +1469,7 @@ def save_results_txt(filepath, chosen_file, freq, params, n_voigt,
         f.write("=" * 60 + "\n")
         f.write(f"EIS Fitter {__version__} - FIT RESULTS\n")
         f.write("=" * 60 + "\n")
-        f.write(f"Data file  : {os.path.relpath(chosen_file, '.')}\n")
+        f.write(f"Data file  : {display_path(chosen_file, '.')}\n")
         f.write(f"Model      : L + Rs + {n_voigt}x(R||CPE)\n")
         f.write(f"Data points: {len(freq)}\n")
         f.write(f"Freq range : {eng_str(freq.min(), 'Hz')} - "
@@ -1489,7 +1498,7 @@ def log_fit_action(log_path, chosen_file, method_label, params, n_voigt,
     with open(log_path, "a", encoding="utf-8") as f:
         f.write("-" * 70 + "\n")
         f.write(f"[{now}]\n")
-        f.write(f"File   : {os.path.relpath(chosen_file, '.')}\n")
+        f.write(f"File   : {display_path(chosen_file, '.')}\n")
         f.write(f"Method : {method_label}\n")
         f.write(f"Model  : L + Rs + {n_voigt}x(R||CPE)\n")
         f.write(format_params(params, n_voigt) + "\n")
@@ -1510,7 +1519,7 @@ def log_kk_standalone(log_path, chosen_file, kk_result, freq):
     with open(log_path, "a", encoding="utf-8") as f:
         f.write("-" * 70 + "\n")
         f.write(f"[{now}]\n")
-        f.write(f"File   : {os.path.relpath(chosen_file, '.')}\n")
+        f.write(f"File   : {display_path(chosen_file, '.')}\n")
         f.write(f"Method : Kramers-Kronig validation (Lin-KK, extended)\n")
         f.write(f"Freq   : {eng_str(freq.min(), 'Hz')} - "
                 f"{eng_str(freq.max(), 'Hz')}  ({len(freq)} pts)\n")
@@ -2464,7 +2473,7 @@ def save_drt_results_txt(filepath, chosen_file, freq, drt_result):
         f.write("=" * 60 + "\n")
         f.write(f"EIS Fitter {__version__} - DRT ANALYSIS RESULTS\n")
         f.write("=" * 60 + "\n")
-        f.write(f"Data file  : {os.path.relpath(chosen_file, '.')}\n")
+        f.write(f"Data file  : {display_path(chosen_file, '.')}\n")
         f.write(f"Data points: {len(freq)}\n")
         f.write(f"Freq range : {eng_str(freq.min(), 'Hz')} - "
                 f"{eng_str(freq.max(), 'Hz')}\n\n")
@@ -2507,7 +2516,7 @@ def log_drt_action(log_path, chosen_file, freq, drt_result):
     with open(log_path, "a", encoding="utf-8") as f:
         f.write("-" * 70 + "\n")
         f.write(f"[{now}]\n")
-        f.write(f"File   : {os.path.relpath(chosen_file, '.')}\n")
+        f.write(f"File   : {display_path(chosen_file, '.')}\n")
         f.write(f"Method : DRT Analysis (Tikhonov + Gaussian RBF)\n")
         f.write(f"Freq   : {eng_str(freq.min(), 'Hz')} - "
                 f"{eng_str(freq.max(), 'Hz')}  ({len(freq)} pts)\n")
@@ -3112,7 +3121,7 @@ def main(data_dir=".", output_dir="EIS_Fit_Results"):
 
         # 2) User selects a file
         chosen_file = select_dta_file(dta_files)
-        success(f"Selected: {os.path.relpath(chosen_file, '.')}")
+        success(f"Selected: {display_path(chosen_file, '.')}")
 
         # 3) Read data
         freq, zreal, zimag = read_dta_file(chosen_file)

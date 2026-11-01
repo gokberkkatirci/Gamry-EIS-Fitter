@@ -14,7 +14,7 @@ dependencies = [
     "numpy>=1.24,<3",
     "scipy>=1.10,<2",
     "matplotlib>=3.7,<4",
-    # CVXPY 1.9 imports QDLDL at startup; its Windows wheel crashes on import.
+    # Keep the Windows solver stack below 1.9 pending validation with Qt.
     "cvxpy>=1.4,<1.9; sys_platform == 'win32'",
     "cvxpy>=1.4,<2; sys_platform != 'win32'",
 ]

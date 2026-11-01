@@ -21,6 +21,9 @@ def test_no_data_has_no_output_side_effect(tmp_path, capsys):
 
 def test_import_does_not_launch_or_install(tmp_path):
     script = '''
+# Windows platform discovery may invoke cmd /c ver; cache it before the guard.
+import platform
+platform.platform()
 import subprocess
 def forbidden(*args, **kwargs):
     raise AssertionError("Import attempted to launch a subprocess")

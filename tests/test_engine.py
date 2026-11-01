@@ -4,6 +4,15 @@ import pytest
 from eis_fitter import engine
 
 
+def test_display_paths_across_windows_drives(monkeypatch):
+    import ntpath
+    from types import SimpleNamespace
+
+    monkeypatch.setattr(engine, "os", SimpleNamespace(path=ntpath))
+    assert engine.display_path(r"C:\data\input.DTA", r"D:\project") == r"C:\data\input.DTA"
+    assert engine.display_path(r"C:\data\input.DTA", r"C:\data") == "input.DTA"
+
+
 def test_parser_columns_and_order(dta_factory, spectrum):
     frequency, real, imag = spectrum
     rows = [[z, i, r, f] for i, (f, r, z) in enumerate(zip(frequency, real, imag))]

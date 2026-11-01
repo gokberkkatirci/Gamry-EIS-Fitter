@@ -2,9 +2,10 @@
 
 ## 0.1.0
 
-- Windows dependency compatibility: constrain CVXPY below 1.9 to avoid the
-  QDLDL native import crash observed with CVXPY 1.9.3.
+- Use a CVXPY <1.9 solver stack on Windows while validating newer native dependencies.
 - Initialize native optimization libraries before Qt for GUI startup and DRT.
+- Support input files on a different Windows drive from the working directory.
+- Allow Windows OS discovery before testing that engine imports launch no processes.
 - CI uses Node.js 24 actions, UTF-8 Python output, an explicit Ubuntu 24.04
   runner, and a native solver import check before tests.
 
