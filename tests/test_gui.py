@@ -1,18 +1,38 @@
 import time
+import subprocess
+import sys
 
 import numpy as np
 import pytest
 
 pytest.importorskip("PyQt5")
+from eis_fitter import engine
 from PyQt5.QtCore import QSettings
 from PyQt5.QtWidgets import QApplication, QMessageBox
 
-from eis_fitter import engine
 from eis_fitter.gui.engine_bridge import get_engine
 from eis_fitter.gui.main_window import MainWindow
 from eis_fitter.gui.workers.drt_worker import DRTWorker
 from eis_fitter.gui.workers.fit_worker import FitWorker
 from eis_fitter.gui.workers.kk_worker import KKWorker
+
+
+def test_gui_bootstrap_loads_solver_before_qt(tmp_path):
+    script = '''
+import builtins
+import sys
+original_import = builtins.__import__
+def checked_import(name, *args, **kwargs):
+    if name.startswith("PyQt5.Qt"):
+        assert "cvxpy" in sys.modules, "Qt loaded before the solver runtime"
+    return original_import(name, *args, **kwargs)
+builtins.__import__ = checked_import
+import eis_fitter.gui.main
+assert "PyQt5.QtWidgets" in sys.modules
+'''
+    result = subprocess.run([sys.executable, "-c", script], cwd=tmp_path,
+                            capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
 
 
 @pytest.fixture(scope="module")

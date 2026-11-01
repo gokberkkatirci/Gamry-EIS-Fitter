@@ -4,6 +4,7 @@
 
 - Windows dependency compatibility: constrain CVXPY below 1.9 to avoid the
   QDLDL native import crash observed with CVXPY 1.9.3.
+- Initialize native optimization libraries before Qt for GUI startup and DRT.
 - CI uses Node.js 24 actions, UTF-8 Python output, an explicit Ubuntu 24.04
   runner, and a native solver import check before tests.
 

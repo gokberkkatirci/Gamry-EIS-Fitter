@@ -5,6 +5,8 @@ Circuit: L + Rs + sum(R || CPE). See docs/methods.md for conventions.
 
 from . import __version__
 
+# Initialize native optimization libraries before any GUI backend loads Qt.
+import cvxpy as cp
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
@@ -1642,7 +1644,6 @@ def _solve_tikhonov(A, b, L, lam, non_negative=True):
     # --- Non-negative solve ---
     # Try CVXPY for a proper QP solution
     try:
-        import cvxpy as cp
         n = A.shape[1]
         x = cp.Variable(n)
         objective = cp.Minimize(
